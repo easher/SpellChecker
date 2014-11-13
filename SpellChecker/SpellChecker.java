@@ -2,7 +2,7 @@ import java.io.*;
 import java.lang.StringBuffer;
 
 public class SpellChecker extends DictHash{
-String[] alphabet; 
+    String[] alphabet;
 	public SpellChecker(){
 		super();
 		alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
@@ -25,15 +25,17 @@ String[] alphabet;
 	}
 
 	
-	/* Inserts all the words in a dictionary file into a SpellChecker's hashtable. 
-	 * The function assumes that each word is separated with a newline character.
-	 * @param dictionaryfile, the path the dictonary file.
+	/* Inserts dictionary file into hashtable
+	 * Each word is separated with a newline character.
+	 * @Param dictionaryfile the path of the dictonary file.
 	 */
 	public void dictMap(String dictionaryFile) throws FileNotFoundException, IOException {
 		BufferedReader file = new BufferedReader( new FileReader(dictionaryFile) );
 		String word = file.readLine();
-		while(word != null){
-			if(word.isEmpty()){//blankLine
+		
+        while(word != null){
+            
+			if(word.isEmpty()){
 				word = file.readLine();
 				continue;
 			}
@@ -42,50 +44,75 @@ String[] alphabet;
 			word = file.readLine();
 		}
 	}
+    
 	/*Takes the name of a textFile file and prints out each misspelled word, the line it occured on,
 	 * and then lists, line by line other possible words. 
-	*/
+	 * @Param textFile path to file to be spell checked
+     */
 	public void fileChecker(String textFile) throws FileNotFoundException, IOException {
 		BufferedReader file = new BufferedReader( new FileReader(textFile) );
 		String lineTest = file.readLine();
-		int lineNumber = 1;	
-		while(lineTest != null){
-			if( lineTest.isEmpty() || lineTest.trim().equals("") || lineTest.trim().equals("\n") || lineTest.trim().equals("\t") ){//blankLine
+		int lineNumber = 1;
+        
+        while(lineTest != null){
+			
+            if( lineTest.isEmpty() || lineTest.trim().equals("") || lineTest.trim().equals("\n") || lineTest.trim().equals("\t") ){//blankLine
 				lineTest = file.readLine();
 				continue;
 			}
-			String [] wordList = lineTest.split(" ");
+			String[] wordList = lineTest.split(" ");
 			for(int i = 0; i < wordList.length; ++i) {
-				if( wordList[i].isEmpty() || wordList[i].trim().equals("") || wordList[i].trim().equals("\n") || wordList[i].trim().equals("\t") )//blwordList[i]
-					continue;
+				
+                if( wordList[i].isEmpty() ||
+                   wordList[i].trim().equals("") ||
+                   wordList[i].trim().equals("\n") ||
+                   wordList[i].trim().equals("\t") )
+                                            continue;
+                
 				spellCheck(""+wordList[i].toLowerCase(), lineNumber);	
 			}
-			++lineNumber;
+			
+            ++lineNumber;
 			lineTest = file.readLine();
 		}
 	}
-		
+	/*
+     *checks to see if a word is in the dictionary, otherwise it checks for other words
+     *@Param data word to be spellchecked
+     */
 	private void spellCheck(String data, int lineNumber) {
     	data = cleanWord(data);
-		if(find(data) > -1){
-			;//word is spelled correctly         
-        } else { 
-        	System.out.println(data+" at line"+lineNumber);
-		    for(int i = 0; i < data.length(); ++i) {
-				for(int j = 1; j < this.alphabet.length; ++j)
+        
+        if(find(data) > -1){
+            
+            //output options to correct word
+        } else {
+        	
+            System.out.println(data+" at line"+lineNumber);
+		    
+            for(int i = 0; i < data.length(); ++i) {
+				
+                for(int j = 1; j < this.alphabet.length; ++j)
 					tryInsert(new StringBuffer(data), i, this.alphabet[j]);
-				if(i > 0) 
+				
+                if(i > 0)
 					trySwapAdjacent(new StringBuffer(data), i);
-				tryRemove(new StringBuffer(data), i);
+				
+                tryRemove(new StringBuffer(data), i);
 			}	
 		}
-	}				
-	/*returns a word clean of contectual punctuation. eg. cleanWord("Hello") returns Hello. and cleanWord(bobs') returns bobs'*/ 
+	}
+				
+    /*sanatizes word for spellchecking
+     @Param word to be sanitized
+     @Return word striped of characters
+     */
 	private String cleanWord(String word){
 
 		if( word.replaceAll("[^a-zA-Z ]","").equals("") ) 
 			return word;//word is just a character, returning a blank string will cause an error
-		StringBuffer cleanWord = new StringBuffer(word);
+		
+        StringBuffer cleanWord = new StringBuffer(word);
 		String item0 = ""+word.charAt(0);
 		String item1 = ""+word.charAt(word.length() -1);
 		
@@ -96,35 +123,51 @@ String[] alphabet;
 			cleanWord.deleteCharAt(0);
 		
 		return cleanWord.toString();
-	}		
-	
-	/*trySwapAdjacent, tryRemove, and tryInsert are called when a word is spelled wrong. 
-	 * This looks for other options in the hashtable when a mispelled word is found. 
-	 */
-
+	}
+    /*
+     * swaps index pivot with index pivot minus 1, checks to see if it is a word
+     * @Param tryWord string to try swap
+     * @Param pivot
+     */
 	private void trySwapAdjacent(StringBuffer tryWord, int pivot) {
 		tryWord.insert(pivot+1,tryWord.charAt(pivot - 1));
 		tryWord.deleteCharAt(pivot - 1);
 		wordCheck(tryWord);
 	}
-	
+    
+    /*
+     * removes a letter from tryword, checks to see if it is a word
+     * @Param tryWord string to have letter inserted
+     * @Param index location of removal
+     */
 	private void tryRemove(StringBuffer tryWord, int index) {
 		
 		tryWord.deleteCharAt(index);
 		wordCheck(tryWord);
 	}
 	
-	private void tryInsert(StringBuffer tryWord, int index, String s) {
+    /*
+     * inserts a letter into tryword, checks to see if it is a word
+     * @Param tryWord string to have letter inserted
+     * @Param index location of insertion
+     * @Param s letter to be inserted
+     */
+    private void tryInsert(StringBuffer tryWord, int index, String s) {
 		char c = s.charAt(0);
-		if(index < tryWord.length()-1){
+		
+        if(index < tryWord.length()-1){
 			tryWord.insert(index,c);
 			wordCheck(tryWord);
-		} else {
-			tryWord.insert(index+1, c);
+        } else {
+            tryWord.insert(index+1, c);
 			wordCheck(tryWord);
 		}
-	}
-
+    }
+    /*
+     * Checks to see if it is a correct word
+     *
+     * @Param tryWord string be checked
+     */
 	private void wordCheck(StringBuffer tryWord){
 		int correctWordHash = find(tryWord.toString());
 		if(correctWordHash != -1)
