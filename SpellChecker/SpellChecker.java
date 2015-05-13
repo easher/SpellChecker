@@ -7,12 +7,12 @@ public class SpellChecker extends DictHash{
 	
 	public SpellChecker() {
 
-        super();
-        alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+		super();
+		alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 	}
 	
 	public static void main(String[] args)throws FileNotFoundException, IOException
-    {
+	{
 		SpellChecker spellCheck = new SpellChecker();
 		try{spellCheck.dictMap(args[0]);
 			spellCheck.fileChecker(args[1]);
@@ -37,7 +37,7 @@ public class SpellChecker extends DictHash{
 		BufferedReader file = new BufferedReader( new FileReader(dictionaryFile) );
 		String word = file.readLine();
 		
-        while(word != null){
+		while(word != null){
 
 			if(word.isEmpty()){
 				word = file.readLine();
@@ -53,19 +53,20 @@ public class SpellChecker extends DictHash{
 	 *takes the name of a textFile file and prints out each misspelled word, the line it occured on,
 	 *and then lists, line by line suggested correct spelling. 
 	 *@param textFile path to file to be spell checked
-     */
+	*/
 	public void fileChecker(String textFile) throws FileNotFoundException, IOException {
 	
 		BufferedReader file = new BufferedReader( new FileReader(textFile) );
 		String lineTest = file.readLine();
 		int lineNumber = 1;
 
-		while(lineTest != null){
+		while(lineTest != null) {
 			
-		if( lineTest.isEmpty() || lineTest.trim().equals("") || lineTest.trim().equals("\n") || lineTest.trim().equals("\t") ){//blankLine
-				lineTest = file.readLine();
-				continue;
+			if( lineTest.isEmpty() || lineTest.trim().equals("") || lineTest.trim().equals("\n") || lineTest.trim().equals("\t") ){//blankLine
+					lineTest = file.readLine();
+					continue;
 			}
+			
 			String[] wordList = lineTest.split(" ");
 			for(int i = 0; i < wordList.length; ++i) {
 				
@@ -85,20 +86,17 @@ public class SpellChecker extends DictHash{
 	}
 	
 	/**
-     * checks to see if a word is in the dictionary, otherwise it checks for other words
-     * @param data word to be spellchecked
-     */
+	* checks to see if a word is in the dictionary, otherwise it checks for other words
+	* @param data word to be spellchecked
+	*/
 	private void spellCheck(String data, int lineNumber) {
 	
 		data = cleanWord(data);
-        
-		if(find(data) > -1){
-            
-            //output options to correct word
-        } else {
-        	
+
+		if(find(data) == -1) {
+
 			System.out.println(data+" at line"+lineNumber);
-		    
+
 			for(int i = 0; i < data.length(); ++i) {
 				
 				for(int j = 1; j < this.alphabet.length; ++j)
@@ -106,17 +104,17 @@ public class SpellChecker extends DictHash{
 				
 				if(i > 0)
 					trySwapAdjacent(new StringBuffer(data), i);
-				
+
 				tryRemove(new StringBuffer(data), i);
-			}	
+			}
 		}
 	}
-				
-    /**
-     *sanatizes word for spellchecking
-     *@param word to be sanitized
-     *@return word striped of characters
-     */
+
+	/**
+	 *sanatizes word for spellchecking
+	 *@param word to be sanitized
+	 *@return word striped of characters
+	 */
 	private String cleanWord(String word){
 
 		if( word.replaceAll("[^a-zA-Z ]","").equals("") ) 
@@ -136,11 +134,11 @@ public class SpellChecker extends DictHash{
 	}
 	
 	/**
-     * swaps index pivot with index pivot minus 1, checks to see if it is a word
-     *
-     * @param tryWord string to try swap
-     * @param pivot
-     */
+	 * swaps index pivot with index pivot minus 1, checks to see if it is a word
+	 *
+	 * @param tryWord string to try swap
+	 * @param pivot
+	 */
 	private void trySwapAdjacent(StringBuffer tryWord, int pivot) {
 	
 		tryWord.insert(pivot+1,tryWord.charAt(pivot - 1));
@@ -149,10 +147,10 @@ public class SpellChecker extends DictHash{
 	}
 
 	/**
-     * removes a letter from tryword, checks to see if it is a word
-     * @param tryWord string to have letter inserted
-     * @param index location of removal
-     */
+	 * removes a letter from tryword, checks to see if it is a word
+	 * @param tryWord string to have letter inserted
+	 * @param index location of removal
+	 */
 	private void tryRemove(StringBuffer tryWord, int index) {
 		
 		tryWord.deleteCharAt(index);
