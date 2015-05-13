@@ -30,7 +30,7 @@ public class DictHash {
         if(currentLoad > loadFactor)
             rehash();
         
-        hashTable[hash(word)] = word;
+        hashTable[insertHash(word)] = word;
         
         ++currentLoad;
     }
@@ -100,7 +100,7 @@ public class DictHash {
         
         for(int i =0; i < oldTable.length; ++i)
             if(oldTable[i] != null)
-                hashTable[hash(oldTable[i])] = oldTable[i];
+                hashTable[insertHash(oldTable[i])] = oldTable[i];
         
         loadFactor = hashTable.length/2;
     }
@@ -111,7 +111,7 @@ public class DictHash {
      *@param word to be hashed
      *@return hashed falue
      */
-     private int hash(String word) {
+     private int insertHash(String word) {
      
         int hashValue = 0;
         
@@ -123,7 +123,7 @@ public class DictHash {
         else
             hashValue = hashValue % tableSize;
         
-        // probe value
+        // probe until a vacent spot is found in the hash table
         int pVal = 0;
         while( hashTable[(hashValue + pVal * pVal) % tableSize] != null )
             ++pVal;

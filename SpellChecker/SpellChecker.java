@@ -2,11 +2,11 @@ import java.io.*;
 import java.lang.StringBuffer;
 
 public class SpellChecker extends DictHash{
-    
+
     String[] alphabet;
 	
 	public SpellChecker() {
-    
+
         super();
         alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 	}
@@ -15,8 +15,7 @@ public class SpellChecker extends DictHash{
     {
 		SpellChecker spellCheck = new SpellChecker();
 		try{spellCheck.dictMap(args[0]);
-			spellCheck.dictMap(args[1]);
-			spellCheck.fileChecker(args[2]);
+			spellCheck.fileChecker(args[1]);
 
 		} catch(FileNotFoundException e1) {
 			System.err.println("One of the file name given as an argument doesnt exist");
@@ -39,7 +38,7 @@ public class SpellChecker extends DictHash{
 		String word = file.readLine();
 		
         while(word != null){
-            
+
 			if(word.isEmpty()){
 				word = file.readLine();
 				continue;
@@ -49,7 +48,7 @@ public class SpellChecker extends DictHash{
 			word = file.readLine();
 		}
 	}
-    
+
 	/**
 	 *takes the name of a textFile file and prints out each misspelled word, the line it occured on,
 	 *and then lists, line by line suggested correct spelling. 
@@ -60,7 +59,7 @@ public class SpellChecker extends DictHash{
 		BufferedReader file = new BufferedReader( new FileReader(textFile) );
 		String lineTest = file.readLine();
 		int lineNumber = 1;
-        
+
 		while(lineTest != null){
 			
 		if( lineTest.isEmpty() || lineTest.trim().equals("") || lineTest.trim().equals("\n") || lineTest.trim().equals("\t") ){//blankLine
@@ -74,9 +73,9 @@ public class SpellChecker extends DictHash{
 				wordList[i].trim().equals("") ||
 				wordList[i].trim().equals("\n") ||
 				wordList[i].trim().equals("\t") )
-                                           
+
 					continue;
-                
+
 				spellCheck(""+wordList[i].toLowerCase(), lineNumber);	
 			}
 			
