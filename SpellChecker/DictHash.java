@@ -1,48 +1,47 @@
 import java.util.*;
-
-
 import java.util.LinkedList;
 import java.util.List;
-/*
- Class DictHash
- Hash table for a dictionary.
- 
-*/
 
 public class DictHash {
+    
     String[] hashTable;
     int tableSize;
     int loadFactor;
     int currentLoad;
 
-    /*
-     *Create a DictHash object
+    /**
+     * Create a DictHash object
      */
     public DictHash() {
-	   tableSize = 101;
-	   hashTable = new String[101];
-	   loadFactor = 50;
-	   currentLoad = 0;
-    }
-    /*Tnserts a string into the hashtable
-     * Calls, rehash if the the current load limit is reached.
-     *
-     *@Param word to be added to table
-     */
 
+        tableSize = 101;
+        hashTable = new String[101];
+        loadFactor = 50;
+        currentLoad = 0;
+    }
+
+    /** 
+     *inserts string into hashtable
+     *
+     *@param word word to be added to table
+     */
     public void insert(String word){
+
         if(currentLoad > loadFactor)
             rehash();
+        
         hashTable[hash(word)] = word;
+        
         ++currentLoad;
     }
     
-   /*
-    *Searches hashTable for word
+   /**
+    *searches for word in hashtable
     *
-    *@Return index of location in hashTable, or -1 if its not there.
+    *@return index of location in hashTable, or -1 if its not there.
     */
     public int find(String word){
+        
         int hashValue = 0;
         
         for(int i = 0; i < word.length(); ++i)
@@ -56,19 +55,20 @@ public class DictHash {
         if(hashTable[hashValue % tableSize] == null)
             return -1;
         
-        // probe value
+        //preform quadratic probing until we find/dont find the word
         int pVal = 0;
         while(!(hashTable[(hashValue + pVal * pVal) % tableSize].equals(word))) {
             ++pVal;
             
             if(hashTable[(hashValue + pVal * pVal) % tableSize] == null)
-                return -1; //not found
+                return -1;
         }
 
         return ((hashValue + pVal * pVal) % tableSize);
     }
+
+    private static int nextPrime(int n) {
     
-    private static int nextPrime( int n ) {
         if( n % 2 == 0 )
             n++;
 
@@ -78,6 +78,7 @@ public class DictHash {
     }
 
     private static boolean isPrime( int n ) {
+    
         if( n == 2 || n == 3 )
             return true;
 
@@ -92,6 +93,7 @@ public class DictHash {
     
     
     private void rehash( ) {
+    
         String[] oldTable = this.hashTable;
         hashTable = new String[nextPrime(tableSize * 2)];
         tableSize = hashTable.length;
@@ -102,14 +104,15 @@ public class DictHash {
         
         loadFactor = hashTable.length/2;
     }
-    /*
-     *  Hashes a string on ASCII value, implements quadratic probing
+
+    /**
+     *hashes a string on ASCII value, implements quadratic probing
      *
-     *  @Param word to be hashed
-     *  @Return hashed falue
+     *@param word to be hashed
+     *@return hashed falue
      */
-    
-    private int hash(String word) {
+     private int hash(String word) {
+     
         int hashValue = 0;
         
         for(int i = 0; i < word.length(); ++i)
@@ -127,8 +130,4 @@ public class DictHash {
         
         return (hashValue + pVal * pVal) % tableSize;
     }
-
-
-
-
 }
